@@ -1,0 +1,7 @@
+[
+  { "animalId": "A1", "breed": "Jersey", "vaccineName": "FMD", "date": "2026-03-01", "upcomingDate": "2026-09-01" },
+  { "animalId": "A2", "breed": "Holstein", "vaccineName": "HS", "date": "2026-02-15", "upcomingDate": "2027-02-15" },
+  { "animalId": "A3", "breed": "Gir", "vaccineName": "BQ", "date": "2026-01-20", "upcomingDate": "2027-01-20" },
+  { "animalId": "A4", "breed": "Sahiwal", "vaccineName": "Anthrax", "date": "2026-03-10", "upcomingDate": "2027-03-10" },
+  { "animalId": "A5", "breed": "Red Sindhi", "vaccineName": "FMD", "date": "2026-03-05", "upcomingDate": "2026-09-05" }
+]

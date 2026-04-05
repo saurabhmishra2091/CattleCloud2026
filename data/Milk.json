@@ -1,0 +1,12 @@
+[
+  { "animalId": "A1", "date": "2026-04-01", "quantity": 10 },
+  { "animalId": "A2", "date": "2026-04-01", "quantity": 12 },
+  { "animalId": "A3", "date": "2026-04-01", "quantity": 8 },
+  { "animalId": "A4", "date": "2026-04-02", "quantity": 11 },
+  { "animalId": "A5", "date": "2026-04-02", "quantity": 9 },
+  { "animalId": "A6", "date": "2026-04-03", "quantity": 7 },
+  { "animalId": "A7", "date": "2026-04-03", "quantity": 6 },
+  { "animalId": "A8", "date": "2026-04-04", "quantity": 13 },
+  { "animalId": "A9", "date": "2026-04-04", "quantity": 10 },
+  { "animalId": "A10", "date": "2026-04-05", "quantity": 12 }
+]

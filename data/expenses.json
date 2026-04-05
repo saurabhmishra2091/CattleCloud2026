@@ -1,0 +1,11 @@
+[
+  { "type": "Expense", "category": "Feed", "amount": 5000, "date": "2026-04-01", "description": "Cattle feed purchase" },
+  { "type": "Expense", "category": "Veterinary", "amount": 2000, "date": "2026-04-02", "description": "Doctor visit" },
+  { "type": "Expense", "category": "Labor", "amount": 3000, "date": "2026-04-03", "description": "Worker salary" },
+  { "type": "Expense", "category": "Maintenance", "amount": 1500, "date": "2026-04-04", "description": "Farm repair" },
+  { "type": "Expense", "category": "Equipment", "amount": 4000, "date": "2026-04-05", "description": "Machine purchase" },
+
+  { "type": "Profit", "category": "Milk Sale", "amount": 10000, "date": "2026-04-01", "description": "Milk sold" },
+  { "type": "Profit", "category": "Animal Sale", "amount": 20000, "date": "2026-04-02", "description": "Cow sold" },
+  { "type": "Profit", "category": "Dairy Products", "amount": 7000, "date": "2026-04-03", "description": "Cheese sale" }
+]

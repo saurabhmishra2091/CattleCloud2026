@@ -1,0 +1,12 @@
+[
+  { "id": "A1", "breed": "Jersey", "age": 4, "gender": "Female", "cost": 50000, "health": "Healthy" },
+  { "id": "A2", "breed": "Holstein", "age": 5, "gender": "Female", "cost": 60000, "health": "Healthy" },
+  { "id": "A3", "breed": "Gir", "age": 3, "gender": "Female", "cost": 45000, "health": "Sick" },
+  { "id": "A4", "breed": "Sahiwal", "age": 6, "gender": "Female", "cost": 55000, "health": "Healthy" },
+  { "id": "A5", "breed": "Red Sindhi", "age": 4, "gender": "Female", "cost": 48000, "health": "Healthy" },
+  { "id": "A6", "breed": "Jersey", "age": 2, "gender": "Male", "cost": 30000, "health": "Healthy" },
+  { "id": "A7", "breed": "Gir", "age": 5, "gender": "Female", "cost": 52000, "health": "Sick" },
+  { "id": "A8", "breed": "Holstein", "age": 3, "gender": "Female", "cost": 61000, "health": "Healthy" },
+  { "id": "A9", "breed": "Sahiwal", "age": 4, "gender": "Female", "cost": 53000, "health": "Healthy" },
+  { "id": "A10", "breed": "Red Sindhi", "age": 6, "gender": "Female", "cost": 57000, "health": "Healthy" }
+]

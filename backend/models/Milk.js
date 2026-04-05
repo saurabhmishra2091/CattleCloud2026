@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const milkSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // ✅
+
   animalId: String,
-  quantity: String,
-  date: String
+  date: String,
+  quantity: Number
 }, { timestamps: true });
 
-const Milk = mongoose.model("Milk", milkSchema);
-
-export default Milk;
+export default mongoose.model("Milk", milkSchema);

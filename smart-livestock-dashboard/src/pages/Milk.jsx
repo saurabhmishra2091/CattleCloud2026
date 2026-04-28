@@ -1,7 +1,13 @@
 // Importing React and useState hook
 import React, { useState, useEffect } from "react";
 
-export default function Milk() {
+// ✅ Import translations
+import { text } from "../utils/translations";
+
+export default function Milk({ lang }) {
+
+  // ✅ SAFE FALLBACK
+  const t = text[lang] || text["en"];
 
   const [animalId, setAnimalId] = useState("");
   const [date, setDate] = useState("");
@@ -11,7 +17,6 @@ export default function Milk() {
 
   const milkPrice = 70;
 
-  // ✅ FETCH FROM BACKEND (FIXED)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,19 +27,17 @@ export default function Milk() {
         });
 
         const data = await res.json();
-
-        setRecords(Array.isArray(data) ? data : []); // ✅ FIX
+        setRecords(Array.isArray(data) ? data : []);
 
       } catch (err) {
         console.error(err);
-        setRecords([]); // ✅ SAFETY
+        setRecords([]);
       }
     };
 
     fetchData();
   }, []);
 
-  // Add Milk Record
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -46,7 +49,6 @@ export default function Milk() {
       quantity: Number(quantity)
     };
 
-    // ✅ SEND TO BACKEND (FIXED)
     await fetch("http://localhost:5000/api/milk", {
       method: "POST",
       headers: {
@@ -56,7 +58,6 @@ export default function Milk() {
       body: JSON.stringify(newRecord)
     });
 
-    // ✅ REFRESH DATA (FIXED)
     const res = await fetch("http://localhost:5000/api/milk", {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token")
@@ -71,7 +72,6 @@ export default function Milk() {
     setQuantity("");
   };
 
-  // Delete Record
   const deleteMilk = async (id) => {
 
     await fetch(`http://localhost:5000/api/milk/${id}`, {
@@ -91,13 +91,10 @@ export default function Milk() {
     setRecords(Array.isArray(data) ? data : []);
   };
 
-  // ✅ SAFE CALCULATIONS
   const safeRecords = Array.isArray(records) ? records : [];
 
   const totalMilk = safeRecords.reduce((sum, r) => sum + Number(r.quantity), 0);
-
   const totalIncome = totalMilk * milkPrice;
-
   const avgMilk = totalMilk / (safeRecords.length || 1);
 
   return (
@@ -108,10 +105,9 @@ export default function Milk() {
         textAlign: "center",
         marginBottom: "20px"
       }}>
-        Milk Production
+        {t.milkProductionTitle}
       </h2>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         style={{
@@ -128,16 +124,16 @@ export default function Milk() {
       >
 
         <div>
-          <label style={{ display: "block" }}>Animal ID</label>
+          <label style={{ display: "block" }}>{t.animalId}</label>
           <input
-            placeholder="Animal ID"
+            placeholder={t.animalId}
             value={animalId}
             onChange={(e)=>setAnimalId(e.target.value)}
           />
         </div>
 
         <div>
-          <label style={{ display: "block" }}>Date</label>
+          <label style={{ display: "block" }}>{t.date}</label>
           <input
             type="date"
             value={date}
@@ -146,31 +142,30 @@ export default function Milk() {
         </div>
 
         <div>
-          <label style={{ display: "block" }}>Milk Quantity (L)</label>
+          <label style={{ display: "block" }}>{t.milkQuantity}</label>
           <input
             type="number"
-            placeholder="Litres"
+            placeholder={t.litres}
             value={quantity}
             onChange={(e)=>setQuantity(e.target.value)}
           />
         </div>
 
         <button type="submit">
-          Add
+          {t.add}
         </button>
 
       </form>
-
-      {/* Table */}
+      <div className="table-wrapper">
       <table className="styled-table">
 
         <thead>
           <tr>
-            <th>Animal ID</th>
-            <th>Date</th>
-            <th>Milk (L)</th>
-            <th>Income (₹)</th>
-            <th>Action</th>
+            <th>{t.animalId}</th>
+            <th>{t.date}</th>
+            <th>{t.milk}</th>
+            <th>{t.income}</th>
+            <th>{t.action}</th>
           </tr>
         </thead>
 
@@ -198,7 +193,7 @@ export default function Milk() {
               <td style={{textAlign:"center"}}>
 
                 <button onClick={()=>deleteMilk(record._id)}>
-                  Delete
+                  {t.delete}
                 </button>
 
               </td>
@@ -207,7 +202,7 @@ export default function Milk() {
           ))}
 
           <tr style={{color:"black",fontWeight:"bold", background:"#f1f2f6",textAlign:"center"}}>
-            <td colSpan="2">Total</td>
+            <td colSpan="2">{t.total}</td>
             <td>{totalMilk} L</td>
             <td>₹{totalIncome}</td>
             <td></td>
@@ -216,9 +211,9 @@ export default function Milk() {
         </tbody>
 
       </table>
-
+</div>
       <div style={{marginTop:"10px",fontWeight:"bold"}}>
-        Average Milk Per Entry: {avgMilk.toFixed(2)} L
+        {t.averageMilk}: {avgMilk.toFixed(2)} L
       </div>
 
     </div>

@@ -9,22 +9,26 @@ import {
 import { Bar } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 
+// ✅ Import translations
+import { text } from "../utils/translations";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-export default function FarmerDashboard() {
+export default function FarmerDashboard({ lang }) {
+
+  // ✅ SAFE FALLBACK
+  const t = text[lang] || text["en"];
 
   const [animals, setAnimals] = useState([]);
   const [milkRecords, setMilkRecords] = useState([]);
   const [vaccines, setVaccines] = useState([]);
 
-  // ✅ FETCH WITH TOKEN + SAFE DATA
   useEffect(() => {
 
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        // 🐄 Animals
         const animalRes = await fetch("http://localhost:5000/api/animals", {
           headers: {
             Authorization: "Bearer " + token
@@ -33,7 +37,6 @@ export default function FarmerDashboard() {
         const animalData = await animalRes.json();
         setAnimals(Array.isArray(animalData) ? animalData : []);
 
-        // 🥛 Milk
         const milkRes = await fetch("http://localhost:5000/api/milk", {
           headers: {
             Authorization: "Bearer " + token
@@ -42,7 +45,6 @@ export default function FarmerDashboard() {
         const milkData = await milkRes.json();
         setMilkRecords(Array.isArray(milkData) ? milkData : []);
 
-        // 💉 Vaccines (if backend ready)
         setVaccines([]);
 
       } catch (err) {
@@ -57,7 +59,6 @@ export default function FarmerDashboard() {
 
   const totalAnimals = animals.length;
 
-  // ✅ SAFE FILTER
   const todayMilk = (Array.isArray(milkRecords) ? milkRecords : [])
     .filter(m => m.date === today)
     .reduce((sum, m) => sum + Number(m.quantity), 0);
@@ -69,7 +70,6 @@ export default function FarmerDashboard() {
 
   const healthAlerts = vaccines;
 
-  // ✅ SAFE REDUCE
   const totalMilk = (Array.isArray(milkRecords) ? milkRecords : [])
     .reduce((sum, r) => sum + Number(r.quantity), 0);
 
@@ -103,7 +103,7 @@ export default function FarmerDashboard() {
     labels: days,
     datasets: [
       {
-        label: "Milk Production (Liters)",
+        label: t.milkProduction,
         data: weeklyData,
         backgroundColor: "#2e7d32",
         borderRadius: 8,
@@ -124,25 +124,27 @@ export default function FarmerDashboard() {
     <div style={styles.container}>
 
       <div style={styles.welcome}>
-        <h2>Welcome, {localStorage.getItem("user") || "Farmer"} 👋</h2>
+        <h2>
+          {t.welcome}, {localStorage.getItem("user") || "Farmer"} 👋
+        </h2>
         <p>{new Date().toDateString()}</p>
       </div>
 
       <div style={styles.grid}>
 
-        <Card title="🐄 Total Animals" value={totalAnimals} color="#e8f5e9" />
-        <Card title="💉 Upcoming Vaccines" value={upcomingVaccines} color="#fff3e0" />
-        <Card title="🥛 Today Milk" value={`${todayMilk} L`} color="#e3f2fd" />
-        <Card title="💰 Revenue Today" value={`₹${revenueToday}`} color="#f3e5f5" />
-        <Card title="⚠️ Health Alerts" value={healthAlerts.length} color="#ffe5e5" />
-        <Card title="🥛 Total Milk" value={`${totalMilk} L`} color="#e8f5e9" />
-        <Card title="🏆 Top Animal" value={topAnimal ? topAnimal[0] : "N/A"} color="#fff3e0" />
-        <Card title="⭐ Farm Score" value={Math.round(performanceScore)} color="#f3e5f5" />
+        <Card title={t.totalAnimals} value={totalAnimals} color="#e8f5e9" />
+        <Card title={t.upcomingVaccines} value={upcomingVaccines} color="#fff3e0" />
+        <Card title={t.todayMilk} value={`${todayMilk} L`} color="#e3f2fd" />
+        <Card title={t.revenueToday} value={`₹${revenueToday}`} color="#f3e5f5" />
+        <Card title={t.healthAlerts} value={healthAlerts.length} color="#ffe5e5" />
+        <Card title={t.totalMilk} value={`${totalMilk} L`} color="#e8f5e9" />
+        <Card title={t.topAnimal} value={topAnimal ? topAnimal[0] : "N/A"} color="#fff3e0" />
+        <Card title={t.farmScore} value={Math.round(performanceScore)} color="#f3e5f5" />
 
       </div>
 
       <div style={styles.chartCard}>
-        <h3>Weekly Milk Production</h3>
+        <h3>{t.weeklyMilk}</h3>
         <Bar data={data} options={options} />
       </div>
 

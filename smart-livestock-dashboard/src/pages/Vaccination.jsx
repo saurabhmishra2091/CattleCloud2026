@@ -1,7 +1,13 @@
 // Importing React and useState hook
 import React, { useState, useEffect } from "react";
 
-export default function Vaccination() {
+// ✅ Import translations
+import { text } from "../utils/translations";
+
+export default function Vaccination({ lang }) {
+
+  // ✅ SAFE FALLBACK
+  const t = text[lang] || text["en"];
 
   const [date, setDate] = useState("");
   const [animalId, setAnimalId] = useState("");
@@ -20,7 +26,6 @@ export default function Vaccination() {
     Anthrax: 12
   };
 
-  // ✅ FETCH FROM BACKEND (FIXED)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,19 +36,17 @@ export default function Vaccination() {
         });
 
         const data = await res.json();
-
-        setRecords(Array.isArray(data) ? data : []); // ✅ FIX
+        setRecords(Array.isArray(data) ? data : []);
 
       } catch (err) {
         console.error(err);
-        setRecords([]); // ✅ SAFETY
+        setRecords([]);
       }
     };
 
     fetchData();
   }, []);
 
-  // Add Vaccination
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -52,7 +55,7 @@ export default function Vaccination() {
     const vaccine = vaccineName.trim();
 
     if (!vaccineRules.hasOwnProperty(vaccine)) {
-      setError("Invalid vaccine name! Allowed: FMD, HS, BQ, Brucellosis, Theileriosis, Anthrax");
+      setError(t.invalidVaccine);
       return;
     }
 
@@ -61,7 +64,7 @@ export default function Vaccination() {
     const selectedDate = new Date(date);
     const months = vaccineRules[vaccine];
 
-    let upcomingDate = "No booster";
+    let upcomingDate = t.noBooster;
 
     if (months > 0) {
       const nextDate = new Date(selectedDate);
@@ -77,7 +80,6 @@ export default function Vaccination() {
       upcomingDate
     };
 
-    // ✅ SEND TO BACKEND (FIXED)
     await fetch("http://localhost:5000/api/vaccinations", {
       method: "POST",
       headers: {
@@ -87,7 +89,6 @@ export default function Vaccination() {
       body: JSON.stringify(newRecord)
     });
 
-    // ✅ REFRESH DATA (FIXED)
     const res = await fetch("http://localhost:5000/api/vaccinations", {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token")
@@ -103,7 +104,6 @@ export default function Vaccination() {
     setVaccineName("");
   };
 
-  // Delete vaccination
   const deleteVaccination = async (id) => {
 
     await fetch(`http://localhost:5000/api/vaccinations/${id}`, {
@@ -123,12 +123,11 @@ export default function Vaccination() {
     setRecords(Array.isArray(data) ? data : []);
   };
 
-  // ✅ SAFE REMINDERS
   const safeRecords = Array.isArray(records) ? records : [];
 
   const reminders = safeRecords.filter(v => {
 
-    if(!v.upcomingDate || v.upcomingDate === "No booster") return false;
+    if(!v.upcomingDate || v.upcomingDate === t.noBooster) return false;
 
     const diff = (new Date(v.upcomingDate) - new Date()) / (1000*60*60*24);
 
@@ -140,7 +139,7 @@ export default function Vaccination() {
     <div>
 
       <h2 style={{fontSize:"32px",textAlign:"center",marginBottom:"25px"}}>
-        Vaccination Schedule
+        {t.vaccinationSchedule}
       </h2>
 
       {reminders.length > 0 && (
@@ -150,7 +149,7 @@ export default function Vaccination() {
           marginBottom:"15px",
           borderRadius:"6px"
         }}>
-          ⚠️ {reminders.length} vaccination(s) due within 3 days
+          ⚠️ {reminders.length} {t.dueVaccines}
         </div>
       )}
 
@@ -171,19 +170,19 @@ export default function Vaccination() {
       >
           
         <div>
-          <label>Animal ID</label>
+          <label>{t.animalId}</label>
           <input value={animalId} onChange={(e)=>setAnimalId(e.target.value)} />
         </div>
 
         <div>
-          <label>Breed</label>
+          <label>{t.breed}</label>
           <input value={breed} onChange={(e)=>setBreed(e.target.value)} />
         </div>
 
         <div>
-          <label>Vaccine Name</label>
+          <label>{t.vaccineName}</label>
           <select value={vaccineName} onChange={(e)=>setVaccineName(e.target.value)}>
-            <option value="">Select Vaccine</option>
+            <option value="">{t.selectVaccine}</option>
             <option value="FMD">FMD</option>
             <option value="HS">HS</option>
             <option value="BQ">BQ</option>
@@ -194,26 +193,26 @@ export default function Vaccination() {
         </div>
 
         <div>
-          <label>Date of Vaccination</label>
+          <label>{t.vaccinationDate}</label>
           <input type="date" value={date} onChange={(e)=>setDate(e.target.value)} />
         </div>
 
-        <button type="submit">Add</button>
+        <button type="submit">{t.add}</button>
 
       </form>
 
       {error && <p style={{color:"red"}}>{error}</p>}
-
+      <div className="table-wrapper">
       <table className="styled-table">
 
         <thead>
           <tr>
-            <th>Animal ID</th>
-            <th>Breed</th>
-            <th>Vaccine</th>
-            <th>Date</th>
-            <th>Next Due</th>
-            <th>Action</th>
+            <th>{t.animalId}</th>
+            <th>{t.breed}</th>
+            <th>{t.vaccine}</th>
+            <th>{t.date}</th>
+            <th>{t.nextDue}</th>
+            <th>{t.action}</th>
           </tr>
         </thead>
 
@@ -230,7 +229,7 @@ export default function Vaccination() {
 
               <td>
                 <button onClick={()=>deleteVaccination(record._id)}>
-                  Delete
+                  {t.delete}
                 </button>
               </td>
 
@@ -240,7 +239,7 @@ export default function Vaccination() {
         </tbody>
 
       </table>
-
+</div>
     </div>
   );
 }

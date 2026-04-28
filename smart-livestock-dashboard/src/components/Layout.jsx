@@ -1,52 +1,47 @@
 // Importing useState hook to manage sidebar open/close state
 import { useState } from "react";
 
-// Importing Outlet from react-router-dom to render child routes
-import { Outlet } from "react-router-dom";
+// ✅ Import Outlet + useNavigate
+import { Outlet, useNavigate } from "react-router-dom";
 
 // Importing layout components
-import Sidebar from "./Sidebar";  // Sidebar navigation component
-import Topbar from "./Topbar";    // Topbar component (menu, theme toggle, logout)
-import Footer from "./Footer";    // Footer component
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
+import Footer from "./Footer";
 
-export default function Layout() {
+export default function Layout({ lang, setLang }) {
 
-  // State to control whether the sidebar is open or closed
+  // State to control sidebar
   const [open, setOpen] = useState(false);
 
-  const logout=()=>{
+  // ✅ FIX: define navigate
+  const navigate = useNavigate();
 
- if(window.confirm("Logout from system?")){
+  const logout = () => {
+    if (window.confirm("Logout from system?")) {
+      localStorage.removeItem("auth");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  };
 
-  localStorage.removeItem("auth");
-  localStorage.removeItem("user");
-
-  navigate("/login");
-
- }
-
-}
   return (
 
-    // Main wrapper for the entire application layout
     <div className="app-wrapper">
 
-      {/* Top navigation bar */}
-      {/* setOpen is passed to allow Topbar to open the sidebar */}
-      <Topbar setOpen={setOpen} />
+      {/* Topbar */}
+      <Topbar setOpen={setOpen} lang={lang} setLang={setLang} />
 
-      {/* Sidebar navigation */}
-      {/* open controls visibility and setOpen allows sidebar to close/open */}
-      <Sidebar open={open} setOpen={setOpen} />
+      {/* Sidebar */}
+      <Sidebar open={open} setOpen={setOpen} lang={lang} />
 
-      {/* Main content area where page components will be rendered */}
+      {/* Main content */}
       <main className="main-content">
-        {/* Outlet renders the matched route component */}
         <Outlet />
       </main>
 
-      {/* Footer section displayed at the bottom of the page */}
-      <Footer />
+      {/* Footer */}
+      <Footer lang={lang} />
 
     </div>
   );

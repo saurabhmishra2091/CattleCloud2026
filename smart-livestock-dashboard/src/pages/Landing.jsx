@@ -1,12 +1,17 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { text } from "../utils/translations";
 
-export default function Landing() {
+export default function Landing({lang, setLang}) {
   const navigate = useNavigate();
+
+  // ✅ translation object
+  const t = text[lang] || text["en"];
+
   return (
     <>
-      <Navbar />
+      <Navbar lang={lang} setLang={setLang} />
 
       {/* HERO SECTION */}
       <section className="hero">
@@ -14,29 +19,28 @@ export default function Landing() {
 
           <div className="hero-left">
             <h1>
-              Digitize Your Farm <br />
-              <span>Maximize Your Profit</span>
+              {t.heroTitle1} <br />
+              <span>{t.heroTitle2}</span>
             </h1>
 
             <p className="tagline">
-              All-in-one platform to manage livestock, milk production,
-              health tracking and farm expenses.
+              {t.heroTagline}
             </p>
 
             <div className="hero-actions">
               <button 
-  className="btn-primary"
-  onClick={() => navigate("/register")}
->
-  Get Started
-</button>
+                className="btn-primary"
+                onClick={() => navigate("/register")}
+              >
+                {t.getStarted}
+              </button>
 
-<button
-  className="btn-outline"
-  onClick={() => window.open("https://youtu.be/XbKd-xIJSKY")}
->
-  Watch Demo
-</button>
+              <button
+                className="btn-outline"
+                onClick={() => window.open("https://youtu.be/XbKd-xIJSKY")}
+              >
+                {t.watchDemo}
+              </button>
 
               <button
                 className="btn-primary"
@@ -46,7 +50,7 @@ export default function Landing() {
                     .scrollIntoView({ behavior: "smooth" })
                 }
               >
-                Explore Features
+                {t.exploreFeatures}
               </button>
             </div>
           </div>
@@ -63,64 +67,64 @@ export default function Landing() {
 
       {/* STATS */}
       <section className="stats">
-        <div>🐄 500+ Farms</div>
-        <div>🥛 50K+ Liters Tracked</div>
-        <div>👨‍🌾 1200 Farmers</div>
+        <div>{t.farms}</div>
+        <div>{t.milkTracked}</div>
+        <div>{t.farmers}</div>
       </section>
 
       {/* TRUSTED */}
       <section className="trusted">
-        <p>Trusted by farmers across India</p>
+        <p>{t.trustedText}</p>
 
         <div className="trusted-logos">
-          <span>🐄 Dairy Farms</span>
-          <span>🌾 Smart Agriculture</span>
-          <span>🥛 Milk Producers</span>
-          <span>👨‍🌾 Farmer Communities</span>
+          <span>{t.dairy}</span>
+          <span>{t.agriculture}</span>
+          <span>{t.milkProducers}</span>
+          <span>{t.community}</span>
         </div>
       </section>
 
       {/* FEATURES */}
       <section id="features" className="features">
-        <h2>Key Features</h2>
-        <p className="subtitle">Empowering Livestock Management</p>
+        <h2>{t.keyFeatures}</h2>
+        <p className="subtitle">{t.empowering}</p>
 
         <div className="features-grid">
 
           <div className="feature-card">
             🐄
-            <h3>Animal Registration</h3>
-            <p>Create and manage livestock profiles.</p>
+            <h3>{t.animalReg}</h3>
+            <p>{t.animalRegDesc}</p>
           </div>
 
           <div className="feature-card">
             💉
-            <h3>Vaccination Tracking</h3>
-            <p>Schedule and record vaccines.</p>
+            <h3>{t.vaccineTrack}</h3>
+            <p>{t.vaccineTrackDesc}</p>
           </div>
 
           <div className="feature-card">
             🥛
-            <h3>Milk Production</h3>
-            <p>Monitor daily milk yield.</p>
+            <h3>{t.milkProd}</h3>
+            <p>{t.milkProdDesc}</p>
           </div>
 
           <div className="feature-card">
             🐎
-            <h3>Breeding Management</h3>
-            <p>Track breeding cycles.</p>
+            <h3>{t.breeding}</h3>
+            <p>{t.breedingDesc}</p>
           </div>
 
           <div className="feature-card">
             👨‍⚕️
-            <h3>Vet Appointment</h3>
-            <p>Book and manage vet visits.</p>
+            <h3>{t.vet}</h3>
+            <p>{t.vetDesc}</p>
           </div>
 
           <div className="feature-card">
             📊
-            <h3>Expense Analysis</h3>
-            <p>Analyze costs and revenue.</p>
+            <h3>{t.expense}</h3>
+            <p>{t.expenseDesc}</p>
           </div>
 
         </div>
@@ -129,8 +133,8 @@ export default function Landing() {
       {/* DASHBOARD PREVIEW */}
       <section id="dashboard" className="dashboard-preview">
 
-        <h2>Powerful Farm Dashboard</h2>
-        <p>See all your farm data in one place</p>
+        <h2>{t.dashboardTitle}</h2>
+        <p>{t.dashboardDesc}</p>
 
         <img
           src="https://images.unsplash.com/photo-1551288049-bebda4e38f71"
@@ -142,32 +146,32 @@ export default function Landing() {
       {/* BENEFITS */}
       <section className="benefits">
 
-        <h2>Why Farmers Love CattleCloud</h2>
+        <h2>{t.whyFarmers}</h2>
 
         <div className="benefit-grid">
 
           <div>
             ⚡
-            <h3>Save Time</h3>
-            <p>No more paperwork</p>
+            <h3>{t.saveTime}</h3>
+            <p>{t.noPaper}</p>
           </div>
 
           <div>
             📈
-            <h3>Increase Milk Production</h3>
-            <p>Track and improve yield</p>
+            <h3>{t.increaseMilk}</h3>
+            <p>{t.improveYield}</p>
           </div>
 
           <div>
             💰
-            <h3>Control Expenses</h3>
-            <p>Know where your money goes</p>
+            <h3>{t.controlExpense}</h3>
+            <p>{t.moneyTrack}</p>
           </div>
 
           <div>
             📱
-            <h3>Access Anywhere</h3>
-            <p>Mobile friendly farm management</p>
+            <h3>{t.accessAnywhere}</h3>
+            <p>{t.mobileFriendly}</p>
           </div>
 
         </div>
@@ -176,23 +180,23 @@ export default function Landing() {
 
       {/* HOW IT WORKS */}
       <section id="how" className="how">
-        <h2>How It Works</h2>
+        <h2>{t.howItWorks}</h2>
 
         <div className="how-grid">
 
           <div className="how-card">
-            <h3>1️⃣ Register Farm</h3>
-            <p>Create your farm profile</p>
+            <h3>{t.step1}</h3>
+            <p>{t.step1Desc}</p>
           </div>
 
           <div className="how-card">
-            <h3>2️⃣ Add Animals</h3>
-            <p>Enter livestock data</p>
+            <h3>{t.step2}</h3>
+            <p>{t.step2Desc}</p>
           </div>
 
           <div className="how-card">
-            <h3>3️⃣ Track & Analyze</h3>
-            <p>Monitor farm performance</p>
+            <h3>{t.step3}</h3>
+            <p>{t.step3Desc}</p>
           </div>
 
         </div>
@@ -205,26 +209,24 @@ export default function Landing() {
 
           <h4>⭐⭐⭐⭐⭐</h4>
 
-          <p>
-            "Since using CattleCloud I've increased milk production
-            and saved hours of paperwork every week."
-          </p>
+          <p>{t.testimonial}</p>
 
-          <strong>Sandeep Rathor — Dairy Farmer</strong>
+          <strong>{t.author}</strong>
 
           <div className="hero-buttons">
             <button 
-  className="btn-primary"
-  onClick={() => navigate("/register")}
->
-  Get Started
-</button>
+              className="btn-primary"
+              onClick={() => navigate("/register")}
+            >
+              {t.getStarted}
+            </button>
+
             <button
-  className="btn-outline"
-  onClick={() => window.open("https://youtu.be/XbKd-xIJSKY")}
->
-  Watch Demo
-</button>
+              className="btn-outline"
+              onClick={() => window.open("https://youtu.be/XbKd-xIJSKY")}
+            >
+              {t.watchDemo}
+            </button>
           </div>
 
         </div>
@@ -234,51 +236,16 @@ export default function Landing() {
       {/* FAQ */}
       <section className="faq">
 
-        <h2>Frequently Asked Questions</h2>
+        <h2>{t.faq}</h2>
 
         <div className="faq-item">
-          <h4>Is CattleCloud free?</h4>
-          <p>Yes, basic features are free for farmers.</p>
-        </div>
-
-        <div className="faq-item">
-          <h4>Can I track milk production?</h4>
-          <p>Yes, you can track daily milk records easily.</p>
-        </div>
-
-         <div className="faq-item">
-          <h4>Can I manage multiple animals?</h4>
-          <p>Yes, you can add and manage unlimited animals with complete records.</p>
+          <h4>{t.q1}</h4>
+          <p>{t.a1}</p>
         </div>
 
         <div className="faq-item">
-          <h4>Does it support vaccination tracking?</h4>
-          <p>Yes, vaccination reminders and history are included.</p>
-        </div>
-
-         <div className="faq-item">
-          <h4>Does it provide profit analysis?</h4>
-          <p>Yes, you can track expenses and income to analyze your farm's profit.</p>
-        </div>
-
-         <div className="faq-item">
-          <h4>Is it suitable for small farmers?</h4>
-          <p>Yes,it is designed for btoh small and large-scale farmers. </p>
-        </div>
-
-         <div className="faq-item">
-          <h4>Can I export my data?</h4>
-          <p>Yes, You can export reports for offline use and analysis.</p>
-        </div>
-
-         <div className="faq-item">
-          <h4>Can I track individual animal performance?</h4>
-          <p>Yes, each animal has a unique profile where you can track health, production, and breeding data. </p>
-        </div>
-
-         <div className="faq-item">
-          <h4>Does CattleCloud support data backup?</h4>
-          <p>Yes, your data is automatically backed up to prevent loss.</p>
+          <h4>{t.q2}</h4>
+          <p>{t.a2}</p>
         </div>
 
       </section>
@@ -286,20 +253,20 @@ export default function Landing() {
       {/* FINAL CTA */}
       <section className="cta">
 
-        <h2>Start Managing Your Farm Smarter Today</h2>
+        <h2>{t.ctaTitle}</h2>
 
-        <p>Join thousands of farmers using CattleCloud</p>
+        <p>{t.ctaDesc}</p>
 
-         <button 
-  className="btn-primary"
-  onClick={() => navigate("/register")}
->
-  Start Free
-</button>
+        <button 
+          className="btn-primary"
+          onClick={() => navigate("/register")}
+        >
+          {t.startFree}
+        </button>
 
       </section>
 
-      <Footer />
+      <Footer lang={lang} />
     </>
   );
 }

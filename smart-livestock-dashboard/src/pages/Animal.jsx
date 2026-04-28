@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 
-export default function Animal() {
+// ✅ Import translations
+import { text } from "../utils/translations";
+
+export default function Animal({ lang }) {
+
+  // ✅ SAFE FALLBACK
+  const t = text[lang] || text["en"];
 
   const [animals, setAnimals] = useState([]);
   const [search, setSearch] = useState("");
 
-  // ✅ FETCH WITH TOKEN + SAFE
   useEffect(() => {
     const fetchAnimals = async () => {
       try {
@@ -16,8 +21,6 @@ export default function Animal() {
         });
 
         const data = await res.json();
-
-        // ✅ IMPORTANT FIX
         setAnimals(Array.isArray(data) ? data : []);
 
       } catch (err) {
@@ -28,7 +31,6 @@ export default function Animal() {
     fetchAnimals();
   }, []);
 
-  // ✅ ADD ANIMAL
   const addAnimal = async (e) => {
     e.preventDefault();
 
@@ -52,7 +54,6 @@ export default function Animal() {
       body: JSON.stringify(newAnimal)
     });
 
-    // refresh
     const res = await fetch("http://localhost:5000/api/animals", {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token")
@@ -65,7 +66,6 @@ export default function Animal() {
     form.reset();
   };
 
-  // ✅ DELETE
   const deleteAnimal = async (id) => {
 
     await fetch(`http://localhost:5000/api/animals/${id}`, {
@@ -81,34 +81,34 @@ export default function Animal() {
   return (
     <div className="container">
 
-      <h2>🐄 Animal Management</h2>
+      <h2>{t.animalManagement}</h2>
 
       <input
-        placeholder="Search Animal ID"
+        placeholder={t.searchAnimal}
         onChange={(e)=>setSearch(e.target.value)}
         style={{marginBottom:"10px"}}
       />
 
       <form className="form-grid" onSubmit={addAnimal}>
-        <input placeholder="Animal ID" required />
-        <input placeholder="Breed" required />
-        <input placeholder="Age" required />
-        <input placeholder="Gender" required />
-        <input placeholder="Purchase Cost" required />
-        <input placeholder="Health Status" required />
-        <button type="submit">Add Animal</button>
+        <input placeholder={t.animalId} required />
+        <input placeholder={t.breed} required />
+        <input placeholder={t.age} required />
+        <input placeholder={t.gender} required />
+        <input placeholder={t.cost} required />
+        <input placeholder={t.health} required />
+        <button type="submit">{t.addAnimal}</button>
       </form>
-
+      <div className="table-wrapper">
       <table className="styled-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Breed</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Cost</th>
-            <th>Health</th>
-            <th>Action</th>
+            <th>{t.id}</th>
+            <th>{t.breed}</th>
+            <th>{t.age}</th>
+            <th>{t.gender}</th>
+            <th>{t.cost}</th>
+            <th>{t.health}</th>
+            <th>{t.action}</th>
           </tr>
         </thead>
 
@@ -137,7 +137,7 @@ export default function Animal() {
                       borderRadius:"5px"
                     }}
                   >
-                    Delete
+                    {t.delete}
                   </button>
                 </td>
 
@@ -146,6 +146,7 @@ export default function Animal() {
 
         </tbody>
       </table>
+      </div>
 
     </div>
   );

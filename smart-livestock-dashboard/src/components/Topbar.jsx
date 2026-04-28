@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Profile from "./Profile";
 
-export default function Topbar({ setOpen }) {
+export default function Topbar({ setOpen, lang, setLang }) {
 
   // Hook used for page navigation (for logout redirect)
   const navigate = useNavigate();
@@ -72,13 +72,24 @@ export default function Topbar({ setOpen }) {
   {/* Right section of the topbar */}
   <div className="topbar-right">
 
-    {/* Theme toggle button (Moon for dark mode, Sun for light mode) */}
-    <button className="icon-btn" onClick={toggleTheme}>
+    {/* 🌐 Language Toggle Button */}
+    <button
+  className="btn-outline" style={{color:"white",background:"none",border:"1px solid black",overflow:"unset"}}
+  onClick={() => setLang(lang === "en" ? "hi" : "en")}
+>
+  🌐 {lang === "en" ? "हिंदी" : "English"}
+</button>
+
+    {/* Theme toggle button */}
+    <button className="icon-btn" 
+    
+    onClick={toggleTheme}>
       {dark ? "☀️" : "🌙"}
     </button>
 
-    {/* Display logged-in user's name from localStorage */}
-    <span className="user">{localStorage.getItem("user") || "Farmer"}</span>
+    {/* Display logged-in user's name */}
+    {/* <span className="user">{localStorage.getItem("user") || "Farmer"}</span> */}
+
     {/* Profile icon */}
     <Profile logout={logout} />
 

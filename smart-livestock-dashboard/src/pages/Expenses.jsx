@@ -1,7 +1,13 @@
 // Importing React and useState hook
 import React, { useState, useEffect } from "react";
 
-export default function Expenses() {
+// ✅ Import translations
+import { text } from "../utils/translations";
+
+export default function Expenses({ lang }) {
+
+  // ✅ SAFE FALLBACK
+  const t = text[lang] || text["en"];
 
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
@@ -29,7 +35,6 @@ export default function Expenses() {
     "Government Subsidy"
   ];
 
-  // ✅ FETCH FROM BACKEND
  useEffect(() => {
   const fetchData = async () => {
     try {
@@ -41,18 +46,20 @@ export default function Expenses() {
 
       const data = await res.json();
 
-      setExpenses(Array.isArray(data) ? data : []); // ✅ FIX
+      // ✅ FIXED
+      setRecords(Array.isArray(data) ? data : []);
 
     } catch (err) {
       console.error(err);
-      setExpenses([]);
+
+      // ✅ FIXED
+      setRecords([]);
     }
   };
 
   fetchData();
 }, []);
 
-  // Add Transaction
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,7 +73,6 @@ export default function Expenses() {
       description
     };
 
-    // ✅ SEND TO BACKEND
     await fetch("http://localhost:5000/api/expenses", {
       method: "POST",
       headers: {
@@ -75,7 +81,6 @@ export default function Expenses() {
       body: JSON.stringify(newRecord)
     });
 
-    // ✅ REFRESH DATA
     const res = await fetch("http://localhost:5000/api/expenses");
     const data = await res.json();
 
@@ -88,7 +93,6 @@ export default function Expenses() {
     setDescription("");
   };
 
-  // Delete transaction
   const deleteRecord = async (id) => {
 
     await fetch(`http://localhost:5000/api/expenses/${id}`, {
@@ -101,7 +105,6 @@ export default function Expenses() {
     setRecords(data);
   };
 
-  // Calculations
   const totalExpenses = records
     .filter(r => r.type === "Expense")
     .reduce((sum, r) => sum + Number(r.amount), 0);
@@ -120,10 +123,9 @@ export default function Expenses() {
         textAlign: "center",
         marginBottom: "20px"
       }}>
-        Farm Transactions
+        {t.transactions}
       </h2>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         style={{
@@ -140,7 +142,7 @@ export default function Expenses() {
       >
 
         <div>
-          <label>Type</label>
+          <label>{t.type}</label>
           <select
             value={type}
             onChange={(e)=>{
@@ -148,19 +150,19 @@ export default function Expenses() {
               setCategory("");
             }}
           >
-            <option value="">Select Type</option>
-            <option>Expense</option>
-            <option>Profit</option>
+            <option value="">{t.selectType}</option>
+            <option>{t.expense}</option>
+            <option>{t.profit}</option>
           </select>
         </div>
 
         <div>
-          <label>Category</label>
+          <label>{t.category}</label>
           <select
             value={category}
             onChange={(e)=>setCategory(e.target.value)}
           >
-            <option value="">Select Category</option>
+            <option value="">{t.selectCategory}</option>
 
             {type === "Expense" &&
               expenseCategories.map((c,i)=>(
@@ -178,7 +180,7 @@ export default function Expenses() {
         </div>
 
         <div>
-          <label>Amount (₹)</label>
+          <label>{t.amount} (₹)</label>
           <input
             type="number"
             value={amount}
@@ -187,7 +189,7 @@ export default function Expenses() {
         </div>
 
         <div>
-          <label>Date</label>
+          <label>{t.date}</label>
           <input
             type="date"
             value={date}
@@ -196,31 +198,30 @@ export default function Expenses() {
         </div>
 
         <div>
-          <label>Description</label>
+          <label>{t.description}</label>
           <input
-            placeholder="Details"
+            placeholder={t.details}
             value={description}
             onChange={(e)=>setDescription(e.target.value)}
           />
         </div>
 
         <button type="submit">
-          Add
+          {t.add}
         </button>
 
       </form>
-
-      {/* Table */}
+      <div className="table-wrapper">
       <table className="styled-table">
 
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Action</th>
+            <th>{t.type}</th>
+            <th>{t.category}</th>
+            <th>{t.amount}</th>
+            <th>{t.date}</th>
+            <th>{t.description}</th>
+            <th>{t.action}</th>
           </tr>
         </thead>
 
@@ -237,7 +238,7 @@ export default function Expenses() {
 
               <td>
                 <button onClick={()=>deleteRecord(r._id)}>
-                  Delete
+                  {t.delete}
                 </button>
               </td>
 
@@ -245,26 +246,26 @@ export default function Expenses() {
           ))}
 
           <tr style={{color:"black",fontWeight:"bold", background:"#f1f2f6"}}>
-            <td>Totals</td>
-            <td>Expenses ₹{totalExpenses}</td>
-            <td>Profit ₹{totalProfit}</td>
+            <td>{t.totals}</td>
+            <td>{t.expenses} ₹{totalExpenses}</td>
+            <td>{t.profit} ₹{totalProfit}</td>
             <td colSpan="3">
-              Net Profit / Loss : ₹{netProfitLoss}
+              {t.net} : ₹{netProfitLoss}
             </td>
           </tr>
 
         </tbody>
 
       </table>
-
+</div>
       <div style={{
         marginTop:"10px",
         fontWeight:"bold",
         color: netProfitLoss >= 0 ? "green" : "red"
       }}>
         {netProfitLoss >= 0
-          ? `Farm Profit: ₹${netProfitLoss}`
-          : `Farm Loss: ₹${Math.abs(netProfitLoss)}`
+          ? `${t.farmProfit}: ₹${netProfitLoss}`
+          : `${t.farmLoss}: ₹${Math.abs(netProfitLoss)}`
         }
       </div>
 

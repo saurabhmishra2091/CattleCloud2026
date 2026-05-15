@@ -91,10 +91,54 @@ export default function Animal({ lang }) {
 
       <form className="form-grid" onSubmit={addAnimal}>
         <input placeholder={t.animalId} required />
-        <input placeholder={t.breed} required />
-        <input placeholder={t.age} required />
-        <input placeholder={t.gender} required />
-        <input placeholder={t.cost} required />
+        {/* <input placeholder={t.breed} required /> */}
+        <select
+  required
+  defaultValue=""
+  style={{
+    width: "10%",
+    height: "30px",
+    padding: "8px",
+    borderRadius: "5px",
+    border: "1px solid #ccc"
+  }}
+>
+  <option value="" disabled>
+    {t.breed}
+  </option>
+
+  <option value="Gir">Gir</option>
+  <option value="Sahiwal">Sahiwal</option>
+  <option value="Red Sindhi">Red Sindhi</option>
+  <option value="Tharparkar">Tharparkar</option>
+  <option value="HF Cross">HF Cross</option>
+  <option value="Jersey">Jersey</option>
+  <option value="Murrah Buffalo">Murrah Buffalo</option>
+  <option value="Mehsana Buffalo">Mehsana Buffalo</option>
+  <option value="Bhadawari Buffalo">Bhadawari Buffalo</option>
+</select>
+        <input type="number" placeholder={t.age} required />
+        {/* <input type="gender" placeholder={t.gender} required /> */}
+        <select
+  required
+  defaultValue=""
+  style={{
+    width: "10%",
+    height: "30px",
+    padding: "8px",
+    borderRadius: "5px",
+    border: "1px solid #ccc"
+  }}
+>
+  <option value="" disabled>
+    {t.gender}
+  </option>
+
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
+        <input type="number" placeholder={t.cost} required />
         <input placeholder={t.health} required />
         <button type="submit">{t.addAnimal}</button>
       </form>

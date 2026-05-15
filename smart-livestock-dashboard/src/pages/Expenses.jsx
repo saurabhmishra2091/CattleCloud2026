@@ -17,6 +17,16 @@ export default function Expenses({ lang }) {
 
   const [records, setRecords] = useState([]);
 
+  // ✅ COMMON INPUT STYLE
+  const inputStyle = {
+    width: "100%",
+    height: "40px",
+    padding: "8px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    boxSizing: "border-box"
+  };
+
   const expenseCategories = [
     "Feed",
     "Veterinary",
@@ -35,8 +45,8 @@ export default function Expenses({ lang }) {
     "Government Subsidy"
   ];
 
- useEffect(() => {
-  const fetchData = async () => {
+  // ✅ FETCH RECORDS
+  const fetchRecords = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/expenses", {
         headers: {
@@ -46,24 +56,27 @@ export default function Expenses({ lang }) {
 
       const data = await res.json();
 
-      // ✅ FIXED
       setRecords(Array.isArray(data) ? data : []);
 
     } catch (err) {
-      console.error(err);
-
-      // ✅ FIXED
+      console.error("Fetch Error:", err);
       setRecords([]);
     }
   };
 
-  fetchData();
-}, []);
+  // ✅ LOAD DATA
+  useEffect(() => {
+    fetchRecords();
+  }, []);
 
+  // ✅ ADD RECORD
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!type || !category || !amount || !date) return;
+    if (!type || !category || !amount || !date) {
+      alert("Please fill all required fields");
+      return;
+    }
 
     const newRecord = {
       type,
@@ -73,38 +86,53 @@ export default function Expenses({ lang }) {
       description
     };
 
-    await fetch("http://localhost:5000/api/expenses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newRecord)
-    });
+    try {
 
-    const res = await fetch("http://localhost:5000/api/expenses");
-    const data = await res.json();
+      await fetch("http://localhost:5000/api/expenses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(newRecord)
+      });
 
-    setRecords(data);
+      // ✅ REFRESH TABLE
+      await fetchRecords();
 
-    setType("");
-    setCategory("");
-    setAmount("");
-    setDate("");
-    setDescription("");
+      // ✅ CLEAR FORM
+      setType("");
+      setCategory("");
+      setAmount("");
+      setDate("");
+      setDescription("");
+
+    } catch (err) {
+      console.error("Add Error:", err);
+    }
   };
 
+  // ✅ DELETE RECORD
   const deleteRecord = async (id) => {
 
-    await fetch(`http://localhost:5000/api/expenses/${id}`, {
-      method: "DELETE"
-    });
+    try {
 
-    const res = await fetch("http://localhost:5000/api/expenses");
-    const data = await res.json();
+      await fetch(`http://localhost:5000/api/expenses/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token")
+        }
+      });
 
-    setRecords(data);
+      // ✅ REFRESH TABLE
+      await fetchRecords();
+
+    } catch (err) {
+      console.error("Delete Error:", err);
+    }
   };
 
+  // ✅ CALCULATIONS
   const totalExpenses = records
     .filter(r => r.type === "Expense")
     .reduce((sum, r) => sum + Number(r.amount), 0);
@@ -118,11 +146,13 @@ export default function Expenses({ lang }) {
   return (
     <div style={{ padding: "20px" }}>
 
-      <h2 style={{
-        fontSize: "32px",
-        textAlign: "center",
-        marginBottom: "20px"
-      }}>
+      <h2
+        style={{
+          fontSize: "32px",
+          textAlign: "center",
+          marginBottom: "20px"
+        }}
+      >
         {t.transactions}
       </h2>
 
@@ -136,133 +166,209 @@ export default function Expenses({ lang }) {
           borderRadius: "10px",
           boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
           marginBottom: "20px",
-          background:"white",
-          color:"black"
+          background: "white",
+          color: "black",
+          flexWrap: "wrap"
         }}
       >
 
-        <div>
+        {/* TYPE */}
+        <div style={{ minWidth: "220px" }}>
           <label>{t.type}</label>
+          <br />
+
           <select
             value={type}
-            onChange={(e)=>{
+            onChange={(e) => {
               setType(e.target.value);
               setCategory("");
             }}
+            style={inputStyle}
           >
             <option value="">{t.selectType}</option>
-            <option>{t.expense}</option>
-            <option>{t.profit}</option>
+            <option value="Expense">{t.expense}</option>
+            <option value="Profit">{t.profit}</option>
           </select>
         </div>
 
-        <div>
+        {/* CATEGORY */}
+        <div style={{ minWidth: "220px" }}>
           <label>{t.category}</label>
+          <br />
+
           <select
             value={category}
-            onChange={(e)=>setCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value)}
+            style={inputStyle}
           >
             <option value="">{t.selectCategory}</option>
 
             {type === "Expense" &&
-              expenseCategories.map((c,i)=>(
-                <option key={i}>{c}</option>
+              expenseCategories.map((c, i) => (
+                <option key={i} value={c}>
+                  {c}
+                </option>
               ))
             }
 
             {type === "Profit" &&
-              profitCategories.map((c,i)=>(
-                <option key={i}>{c}</option>
+              profitCategories.map((c, i) => (
+                <option key={i} value={c}>
+                  {c}
+                </option>
               ))
             }
 
           </select>
         </div>
 
-        <div>
+        {/* AMOUNT */}
+        <div style={{ minWidth: "220px" }}>
           <label>{t.amount} (₹)</label>
+          <br />
+
           <input
             type="number"
             value={amount}
-            onChange={(e)=>setAmount(e.target.value)}
+            onChange={(e) => setAmount(e.target.value)}
+            style={inputStyle}
           />
         </div>
 
-        <div>
+        {/* DATE */}
+        <div style={{ minWidth: "220px" }}>
           <label>{t.date}</label>
+          <br />
+
           <input
             type="date"
             value={date}
-            onChange={(e)=>setDate(e.target.value)}
+            onChange={(e) => setDate(e.target.value)}
+            style={inputStyle}
           />
         </div>
 
-        <div>
+        {/* DESCRIPTION */}
+        <div style={{ minWidth: "220px" }}>
           <label>{t.description}</label>
+          <br />
+
           <input
             placeholder={t.details}
             value={description}
-            onChange={(e)=>setDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
+            style={inputStyle}
           />
         </div>
 
-        <button type="submit">
-          {t.add}
-        </button>
+        {/* BUTTON */}
+        <div>
+          <button
+            type="submit"
+            style={{
+              height: "40px",
+              padding: "0 20px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer"
+            }}
+          >
+            {t.add}
+          </button>
+        </div>
 
       </form>
+
+      {/* TABLE */}
       <div className="table-wrapper">
-      <table className="styled-table">
 
-        <thead>
-          <tr>
-            <th>{t.type}</th>
-            <th>{t.category}</th>
-            <th>{t.amount}</th>
-            <th>{t.date}</th>
-            <th>{t.description}</th>
-            <th>{t.action}</th>
-          </tr>
-        </thead>
+        <table className="styled-table">
 
-        <tbody>
-
-          {records.map((r)=>(
-            <tr key={r._id} style={{color:"black",background:"lightgray"}}>
-
-              <td>{r.type}</td>
-              <td>{r.category}</td>
-              <td>₹{r.amount}</td>
-              <td>{r.date}</td>
-              <td>{r.description}</td>
-
-              <td>
-                <button onClick={()=>deleteRecord(r._id)}>
-                  {t.delete}
-                </button>
-              </td>
-
+          <thead>
+            <tr>
+              <th>{t.type}</th>
+              <th>{t.category}</th>
+              <th>{t.amount}</th>
+              <th>{t.date}</th>
+              <th>{t.description}</th>
+              <th>{t.action}</th>
             </tr>
-          ))}
+          </thead>
 
-          <tr style={{color:"black",fontWeight:"bold", background:"#f1f2f6"}}>
-            <td>{t.totals}</td>
-            <td>{t.expenses} ₹{totalExpenses}</td>
-            <td>{t.profit} ₹{totalProfit}</td>
-            <td colSpan="3">
-              {t.net} : ₹{netProfitLoss}
-            </td>
-          </tr>
+          <tbody>
 
-        </tbody>
+            {records.length > 0 ? (
+              records.map((r) => (
+                <tr
+                  key={r._id}
+                  style={{
+                    color: "black",
+                    background: "lightgray"
+                  }}
+                >
 
-      </table>
-</div>
-      <div style={{
-        marginTop:"10px",
-        fontWeight:"bold",
-        color: netProfitLoss >= 0 ? "green" : "red"
-      }}>
+                  <td>{r.type}</td>
+                  <td>{r.category}</td>
+                  <td>₹{r.amount}</td>
+                  <td>{r.date}</td>
+                  <td>{r.description}</td>
+
+                  <td>
+                    <button
+                      onClick={() => deleteRecord(r._id)}
+                      style={{
+                        background: "red",
+                        color: "white",
+                        border: "none",
+                        padding: "5px 10px",
+                        borderRadius: "5px",
+                        cursor: "pointer"
+                      }}
+                    >
+                      {t.delete}
+                    </button>
+                  </td>
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>
+                  No Records Found
+                </td>
+              </tr>
+            )}
+
+            {/* TOTALS */}
+            <tr
+              style={{
+                color: "black",
+                fontWeight: "bold",
+                background: "#f1f2f6"
+              }}
+            >
+              <td>{t.totals}</td>
+              <td>{t.expenses} ₹{totalExpenses}</td>
+              <td>{t.profit} ₹{totalProfit}</td>
+              <td colSpan="3">
+                {t.net} : ₹{netProfitLoss}
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      {/* PROFIT / LOSS */}
+      <div
+        style={{
+          marginTop: "10px",
+          fontWeight: "bold",
+          color: netProfitLoss >= 0 ? "green" : "red"
+        }}
+      >
         {netProfitLoss >= 0
           ? `${t.farmProfit}: ₹${netProfitLoss}`
           : `${t.farmLoss}: ₹${Math.abs(netProfitLoss)}`

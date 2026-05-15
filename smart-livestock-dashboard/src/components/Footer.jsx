@@ -37,8 +37,8 @@ export default function Footer({ lang }) {
 
         <div className="footer-section" style={{marginLeft:"auto"}}>
           <h3>{t.contact}</h3>
-          <p style={{fontSize:"16px"}}>📧 {t.email}: support@cattlecloud.com</p>
-          <p style={{fontSize:"16px"}}>📞 {t.phone}: +91 9876543210</p>
+          <p style={{fontSize:"16px"}}>📧 {t.email}: saurabh1979mishra@gamil.com</p>
+          <p style={{fontSize:"16px"}}>📞 {t.phone}: +91 9329792091</p>
           <p style={{fontSize:"16px"}}>🌐 {t.location}: {t.india}</p>
         </div>
 
